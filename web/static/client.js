@@ -1,5 +1,5 @@
 // get DOM elements
-var dataChannelLog = document.getElementById('data-channel'),
+var 
     iceConnectionLog = document.getElementById('ice-connection-state'),
     iceGatheringLog = document.getElementById('ice-gathering-state'),
     signalingLog = document.getElementById('signaling-state');
@@ -91,18 +91,7 @@ function start() {
         video: true,
         audio: true
     };
-    if (document.getElementById('use-video').checked) {
-        var resolution = document.getElementById('video-resolution').value;
-        if (resolution) {
-            resolution = resolution.split('x');
-            constraints.video = {
-                width: parseInt(resolution[0], 0),
-                height: parseInt(resolution[1], 0)
-            };
-        } else {
-            constraints.video = true;
-        }
-    }
+
 
     if (constraints.video || constraints.audio) {
         if (constraints.video) {
@@ -123,6 +112,22 @@ function start() {
     document.getElementById('stop').style.display = 'inline-block';
 }
 
+
+function pause() {
+    // close transceivers
+    if (pc.getTransceivers) {
+        pc.getTransceivers().forEach(function(transceiver) {
+            if (transceiver.stop) {
+                transceiver.stop();
+            }
+        });
+    }
+
+    // close local audio / video
+    pc.getSenders().forEach(function(sender) {
+        sender.track.stop();
+    });
+}
 
 function stop() {
     document.getElementById('stop').style.display = 'none';
@@ -145,7 +150,7 @@ function stop() {
     setTimeout(function() {
         pc.close();
     }, 500);
-    }
+}
 
 socket.on('connect', function() {
     socket.emit('my_event', {data: 'I\'m connected!'});
@@ -169,8 +174,11 @@ video.addEventListener("play", (event) => {
 
 
 video.addEventListener("pause", (event) => {
-    console.log("alaman pausesi")
+    pause()
     video.srcObject.getTracks().forEach(t => t.enabled = !t.enabled)
+    socket.emit("pause", {
+        "time": video.currentTime
+    })
 })
 
 video.addEventListener("ended", (event) => {
