@@ -61,10 +61,8 @@ async def res(data):
         async def on_ended():
             log_info("Track %s ended", track.kind)
             
-            
             await recorder.stop()
            
-
 
     await pc.setRemoteDescription(offer) 
     await recorder.start() 
@@ -79,7 +77,7 @@ async def connect_to_server(sid, data):
     
 @sio.on("pause")
 async def pause_video(sid, data):
-    print(data)
+    print(data) 
 
 async def on_shutdown(app):
     pass
