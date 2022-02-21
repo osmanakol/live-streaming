@@ -171,6 +171,9 @@ video.addEventListener("play", (event) => {
 video.addEventListener("pause", (event) => {
     console.log("alaman pausesi")
     video.srcObject.getTracks().forEach(t => t.enabled = !t.enabled)
+    socket.emit("pause", {
+        "time": video.currentTime
+    })
 })
 
 video.addEventListener("ended", (event) => {

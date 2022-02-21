@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  web:
+    container_name: web_v1
+    network_mode: bridge
+    image: live_streaming
+    restart: always
+    build:
+      context: web
+      dockerfile: Dockerfile
+    env_file:
+      - web/devel.env
+    ports:
+      - "10001:30000"
+  
+  signaling_service:
+    container_name: signaling_service
+    network_mode: bridge
+    image: signaling_service
+    restart: always
+    build:
+      context: .
+      dockerfile: services/signaling_service/signaling_service.Dockerfile
+    env_file:
+      - services/signaling_service/.env
+    ports:
+      - 50000:50000
+
+  nginx:
+    container_name: api_gateway
+    image: nginx
+    network_mode: host
+    build: 
+      context: .
+      dockerfile: docker/nginx.Dockerfile
+    restart: always
+
+  redis:
+    image: redis
+    container_name: caching_service
+    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
+    volumes:
+      - ./docker/redis/:/etc/redis/
+      - ./docker/redis/cache:/data
+      - ./docker/redis/cache:/log
+    ports:
+      - "6379:6379"
+    networks:
+      redisNet:
+        ipv4_address: 10.10.10.10
+  
+networks:
+  redisNet:
+    external: true

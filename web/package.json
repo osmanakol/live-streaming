@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc --outDir dist",
     "dev": "DOTENV_CONFIG_PATH=./devel.env nodemon -r dotenv/config --exec ts-node --project tsconfig.json  src/server.ts",
-    "prod": "DOTENV_CONFIG_PATH=./prod.env node -r dotenv/config dist/server.js"
+    "prod": "DOTENV_CONFIG_PATH=./devel.env node -r dotenv/config dist/server.js"
   },
   "author": "Osman Akol",
   "license": "ISC",

@@ -4,6 +4,7 @@ import { engine } from "express-handlebars";
 import { error_handler_middleware } from "./middleware/error_handler.middleware";
 import { AppRoute } from "./routes/app.route";
 import { errorHandlerUtil } from "./utils/index";
+import { STATICFILES } from "./config";
 
 class App {
     public app: Application
@@ -28,6 +29,7 @@ class App {
     }
 
     private routeConfig = () => {
+        this.app.use("/", express.static(STATICFILES))
         this.app.use("/", new AppRoute().Routes())
     }
 
